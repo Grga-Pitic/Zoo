@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+#      ddl-auto: create-drop
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/test
+    username: root
+    password: root
+    driverClassName: org.postgresql.Driver
+  mvc:
+    view:
+      suffix: .html
+  security:
+    user:
+      name: admin
+      password: admin
+    enable-csrf: false
