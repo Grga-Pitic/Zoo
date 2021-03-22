@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:9.6.21-alpine
+    container_name: database
+    restart: unless-stopped
+    tty: true
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5432:5432
