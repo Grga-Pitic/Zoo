@@ -74,8 +74,8 @@
                         <td><input type="text" name="name" v-model="row.name"></td>
                         <td><button v-on:click="save">Save</button></td>
                         <td><button v-on:click="remove">Delete</button></td>
-                        <td><button>Clean up</button></td>
-                        <td><button>Feed</button></td>
+                        <td><button v-on:click="openModal" action="cleanup">Clean up</button></td>
+                        <td><button v-on:click="openModal" action="feed">Feed</button></td>
                     </tr>
                 </tbody>
 
@@ -94,7 +94,12 @@
                 <tr>
                     <td></td>
                     <td><input type="text" name="name"></td>
-                    <td></td>
+                    <td>
+                        <select name="state">
+                            <option value="AVIARY">Aviary</option>
+                            <option value="CAGE">Cage</option>
+                        </select>
+                    </td>
                     <td><button v-on:click="save">Add</button></td>
                 </tr>
                 </tbody>
@@ -102,20 +107,40 @@
                     <tr>
                         <td><input type="text" name="id" class="id" v-model="row.id" disabled></td>
                         <td><input type="text" name="name" v-model="row.name"></td>
-                        <td><input type="text" name="state" v-model="row.state"></td>
+                        <td>
+                            <select name="state" v-model="row.state">
+                                <option value="AVIARY">Aviary</option>
+                                <option value="CAGE">Cage</option>
+                            </select>
+                        </td>
                         <td><button v-on:click="save">Save</button></td>
                         <td><button v-on:click="remove">Delete</button></td>
-                        <td><button>Clean up</button></td>
-                        <td><button>Feed</button></td>
+                        <td><button v-on:click="openModal" v-bind:disabled="row.state == 'CAGE'" action="cleanup">Clean up</button></td>
+                        <td><button v-on:click="openModal" v-bind:disabled="row.state == 'AVIARY'" action="feed">Feed</button></td>
                     </tr>
                 </tbody>
 
             </table>
         </div>
 
-        <modal v-if="showModal" @close="showModal = false">
-            <h3 slot="header">Employee list</h3>
-            <div slot="body">body</div>
+        <modal v-if="showModal" @close="doAction(); showModal = false;">
+            <h3 slot="header">Do action</h3>
+            <div slot="body">
+                <div v-if="selectedTab === 'employee'">
+                    <p>Select an animal:</p>
+                    <select name="animal" v-model="actionData.animalId">
+                        <option v-for="row in animal" :value="row.id"
+                                v-bind:hidden="(row.state=='CAGE' && actionData.action=='cleanup') || (row.state=='AVIARY' && actionData.action=='feed')"
+                        >{{ row.id }} {{ row.name }}</option>
+                    </select>
+                </div>
+                <div v-if="selectedTab === 'animal'">
+                    <p>Select an employee:</p>
+                    <select name="employee" v-model="actionData.employeeId">
+                        <option v-for="row in employee" :value="row.id">{{ row.id }} {{ row.name }}</option>
+                    </select>
+                </div>
+            </div>
         </modal>
     </div>
 

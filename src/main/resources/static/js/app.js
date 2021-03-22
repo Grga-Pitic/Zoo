@@ -9,44 +9,46 @@ var app = new Vue({
     el: "#app",
     data: {
         showModal: false,
+        actionData: {
+            action: '',
+            animalId: 0,
+            employeeId: 0,
+        },
         selectedTab: '',
+        tabs: ['employee', 'animal'],
         animal: [],
         employee: [],
     },
     methods: {
         tabClick: function (event) {
-            var appObject = this;
-            var tabName = event.target.getAttribute('name');
-            this.selectedTab = tabName;
-            axios
-                .get('http://localhost:8080/' + tabName)
-                .then(function (response) {
-                    appObject[tabName] = response.data;
-                });
+            this.selectedTab = event.target.getAttribute('name');
+            updateTabs(this);
         },
         save: function (event) {
-            var data = {};
-            var elements = event.target.closest('tr').getElementsByTagName('input');
-            for (var element of elements) {
-                data[element.getAttribute('name')] = element.value;
-            }
+
+            var rowData = getRowData(event.target);
+
+            var appObject = this;
 
             axios
                 .post(
                     'http://localhost:8080/' + this.selectedTab,
-                    data,
+                    rowData,
                 )
                 .then(function (response) {
                     if (response.status !== 200) {
                         alert('Occures an error. Code: ' + response.status);
                     }
+                    updateTabs(appObject, appObject.selectedTab);
                 });
 
         },
         remove: function (event) {
 
-            var element = event.target.closest('tr').getElementsByClassName('id')[0];
-            var instanceId = element.value;
+            var rowData = getRowData(event.target);
+            var instanceId = rowData.id;
+
+            var appObject = this;
 
             axios
                 .delete(
@@ -58,8 +60,58 @@ var app = new Vue({
                 .then(function (response) {
                     if (response.status !== 200) {
                         alert('Occures an error. Code: ' + response.status);
+                        return;
+                    }
+                    updateTabs(appObject, appObject.selectedTab);
+                });
+        },
+        openModal: function (event) {
+            var rowData = getRowData(event.target);
+
+            updateTabs(this);
+            this.actionData.action = event.target.getAttribute('action');
+            this.actionData[this.selectedTab+'Id'] = parseInt(rowData.id);
+            this.showModal = true;
+        },
+        doAction: function (event) {
+            var actionData = this.actionData;
+            axios
+                .post(
+                    'http://localhost:8080/' + actionData.action,
+                    actionData,
+                )
+                .then(function (response) {
+                    if (response.status === 204) {
+                        alert('Success!!!');
                     }
                 });
         }
+
     }
 });
+
+function updateTabs(app) {
+    app.tabs.forEach(function (tabName) {
+        axios
+            .get('http://localhost:8080/' + tabName)
+            .then(function (response) {
+                app[tabName] = response.data;
+            });
+    });
+
+}
+
+function getRowData(element) {
+    var data = {};
+    var inputElements = element.closest('tr').getElementsByTagName('input');
+    for (var input of inputElements) {
+        data[input.getAttribute('name')] = input.value;
+    }
+
+    var selectElements = element.closest('tr').getElementsByTagName('select');
+    for (var select of selectElements) {
+        data[select.getAttribute('name')] = select.value;
+    }
+
+    return data;
+}
