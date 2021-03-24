@@ -1,6 +1,7 @@
 package org.pet.main.controller.api;
 
 import org.pet.main.emun.Action;
+import org.pet.main.exception.ZooException;
 import org.pet.main.model.Animal;
 import org.pet.main.model.Employee;
 import org.pet.main.repository.AnimalRepository;
@@ -23,7 +24,7 @@ public class ActionController {
 
     @PostMapping("/action")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void doAction(@RequestBody ActionData data) throws Exception {
+    public void doAction(@RequestBody ActionData data) throws ZooException {
         Animal animal = animalRepository.findById(data.getAnimalId()).get();
         Employee employee = employeeRepository.findById(data.getEmployeeId()).get();
         service.doAction(animal, employee, data.getAction());
