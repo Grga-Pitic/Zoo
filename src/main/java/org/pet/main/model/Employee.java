@@ -1,9 +1,6 @@
 package org.pet.main.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Employee {
@@ -11,6 +8,8 @@ public class Employee {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
+
+    @Column(nullable = false)
     private String name;
 
     public Employee() {}
