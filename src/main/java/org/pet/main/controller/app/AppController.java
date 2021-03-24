@@ -1,7 +1,5 @@
 package org.pet.main.controller.app;
 
-import org.pet.main.model.Animal;
-import org.pet.main.model.Employee;
 import org.pet.main.repository.AnimalRepository;
 import org.pet.main.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
