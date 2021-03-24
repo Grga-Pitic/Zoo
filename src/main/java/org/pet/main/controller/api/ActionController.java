@@ -1,5 +1,6 @@
 package org.pet.main.controller.api;
 
+import org.pet.main.emun.Action;
 import org.pet.main.model.Animal;
 import org.pet.main.model.Employee;
 import org.pet.main.repository.AnimalRepository;
@@ -20,21 +21,14 @@ public class ActionController {
 
     private ZooService service;
 
-    @PostMapping("/feed")
+    @PostMapping("/action")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void feed(@RequestBody ActionData data) throws Exception {
+    public void doAction(@RequestBody ActionData data) throws Exception {
         Animal animal = animalRepository.findById(data.getAnimalId()).get();
         Employee employee = employeeRepository.findById(data.getEmployeeId()).get();
-        service.feedAnimal(animal, employee);
+        service.doAction(animal, employee, data.getAction());
     }
 
-    @PostMapping("/cleanup")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cleanup(@RequestBody ActionData data) throws Exception {
-        Animal animal = animalRepository.findById(data.getAnimalId()).get();
-        Employee employee = employeeRepository.findById(data.getEmployeeId()).get();
-        service.cleanUpCage(animal, employee);
-    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
@@ -64,12 +58,18 @@ public class ActionController {
 
         private long animalId;
 
+        private Action action;
+
         public long getEmployeeId() {
             return employeeId;
         }
 
         public long getAnimalId() {
             return animalId;
+        }
+
+        public Action getAction() {
+            return action;
         }
     }
 

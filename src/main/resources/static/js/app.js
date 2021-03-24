@@ -77,7 +77,7 @@ var app = new Vue({
             var actionData = this.actionData;
             axios
                 .post(
-                    'http://localhost:8080/' + actionData.action,
+                    'http://localhost:8080/action',
                     actionData,
                 )
                 .then(function (response) {
