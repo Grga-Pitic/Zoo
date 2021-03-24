@@ -36,10 +36,9 @@ var app = new Vue({
                     rowData,
                 )
                 .then(function (response) {
-                    if (response.status !== 200) {
-                        alert('Occures an error. Code: ' + response.status);
-                    }
                     updateTabs(appObject, appObject.selectedTab);
+                }).catch(function (error) {
+                    alert('Occures an error. Code: ' + error.response);
                 });
 
         },
@@ -58,11 +57,9 @@ var app = new Vue({
                     },
                 )
                 .then(function (response) {
-                    if (response.status !== 200) {
-                        alert('Occures an error. Code: ' + response.status);
-                        return;
-                    }
                     updateTabs(appObject, appObject.selectedTab);
+                }).catch(function (error) {
+                    alert('Occures an error. Code: ' + error.response);
                 });
         },
         openModal: function (event) {
@@ -77,13 +74,11 @@ var app = new Vue({
             var actionData = this.actionData;
             axios
                 .post(
-                    'http://localhost:8080/action',
+                    '/action',
                     actionData,
                 )
-                .then(function (response) {
-                    if (response.status === 204) {
-                        alert('Success!!!');
-                    }
+                .catch(function (error) {
+                    alert('Occures an error. Code: ' + error.response);
                 });
         }
 
@@ -93,7 +88,7 @@ var app = new Vue({
 function updateTabs(app) {
     app.tabs.forEach(function (tabName) {
         axios
-            .get('http://localhost:8080/' + tabName)
+            .get('/' + tabName)
             .then(function (response) {
                 app[tabName] = response.data;
             });
