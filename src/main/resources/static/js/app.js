@@ -4,7 +4,6 @@ Vue.component("modal", {
 
 axios.defaults.headers.common['X-CSRF-TOKEN'] = document.getElementById('_csrf').getAttribute('content');
 
-// start app
 var app = new Vue({
     el: "#app",
     data: {
@@ -32,7 +31,7 @@ var app = new Vue({
 
             axios
                 .post(
-                    'http://localhost:8080/' + this.selectedTab,
+                    '/' + this.selectedTab,
                     rowData,
                 )
                 .then(function (response) {
@@ -51,7 +50,7 @@ var app = new Vue({
 
             axios
                 .delete(
-                    'http://localhost:8080/' + this.selectedTab,
+                    '/' + this.selectedTab,
                     {
                         data: instanceId
                     },
